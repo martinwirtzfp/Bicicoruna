@@ -1,25 +1,48 @@
+import 'station_info.dart';
+import 'station_status.dart';
+
+// Modelo completo de una estación que combina información y estado
 class Station {
-  final int station_id;
+  final String stationId;
   final String name;
+  final String address;
   final int capacity;
-  final int num_docks_available;
-  final int num_docks_disabled;
+  final int numBikesAvailable;
+  final int numBikesDisabled;
+  final int numDocksAvailable;
+  final int numDocksDisabled;
+  final int numBikesElectric;
+  final int numBikesMechanic;
+  final DateTime lastReported;
 
   Station({
-    required this.station_id,
+    required this.stationId,
     required this.name,
+    required this.address,
     required this.capacity,
-    required this.num_docks_available,
-    required this.num_docks_disabled,
+    required this.numBikesAvailable,
+    required this.numBikesDisabled,
+    required this.numDocksAvailable,
+    required this.numDocksDisabled,
+    required this.numBikesElectric,
+    required this.numBikesMechanic,
+    required this.lastReported,
   });
 
-  factory Station.fromJson(Map<String, dynamic> json) {
+  // Combina datos de StationInfo y StationStatus
+  factory Station.combine(StationInfo info, StationStatus status) {
     return Station(
-      station_id: (json['station_id'] as num).toInt(),
-      name: (json['name'] ?? '') as String,
-      capacity: (json['capacity'] as num).toInt(),
-      num_docks_available: (json['num_docks_available'] as num).toInt(),
-      num_docks_disabled: (json['num_docks_disabled'] as num).toInt(),
+      stationId: info.stationId,
+      name: info.name,
+      address: info.address,
+      capacity: info.capacity,
+      numBikesAvailable: status.numBikesAvailable,
+      numBikesDisabled: status.numBikesDisabled,
+      numDocksAvailable: status.numDocksAvailable,
+      numDocksDisabled: status.numDocksDisabled,
+      numBikesElectric: status.numBikesElectric,
+      numBikesMechanic: status.numBikesMechanic,
+      lastReported: status.lastReported,
     );
   }
 }
