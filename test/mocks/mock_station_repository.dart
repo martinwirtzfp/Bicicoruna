@@ -11,7 +11,7 @@ class MockStationRepository implements IStationRepository {
     await Future.delayed(const Duration(milliseconds: 100));
   }
 
-  // Devuelve una lista predefinida de estaciones fake
+  // Devuelve una lista de estaciones 
   Future<List<Station>> getAllStations() async {
     await _simulateNetworkDelay();
 

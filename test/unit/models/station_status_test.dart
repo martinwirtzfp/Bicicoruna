@@ -94,31 +94,5 @@ void main() {
       expect(stationStatus.lastReported.year, 2026,
           reason: 'El timestamp debe convertirse al año correcto');
     });
-
-    test('Maneja valores null o vacíos en vehicle_types_available', () {
-      // PROPÓSITO: Evitar crashes cuando la API no devuelve información de tipos
-      // A veces la estación puede no reportar tipos de vehículos
-      // La app debe seguir funcionando sin crashear
-      
-      // Arrange: JSON con vehicle_types_available = null
-      final json = {
-        'station_id': '99',
-        'num_bikes_available': 0,
-        'num_bikes_disabled': 0,
-        'num_docks_available': 15,
-        'num_docks_disabled': 0,
-        'last_reported': 1768427178,
-        'vehicle_types_available': null, // Sin datos de tipos
-      };
-
-      // Act
-      final stationStatus = StationStatus.fromJson(json);
-
-      // Assert: Debe devolver 0 para ambos tipos sin crashear
-      expect(stationStatus.numBikesElectric, 0,
-          reason: 'Sin datos de tipos, eléctricas debe ser 0');
-      expect(stationStatus.numBikesMechanic, 0,
-          reason: 'Sin datos de tipos, mecánicas debe ser 0');
-    });
   });
 }

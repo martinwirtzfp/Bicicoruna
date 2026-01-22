@@ -10,14 +10,6 @@ void main() {
     test(
         'Valida el flujo JSON → StationInfo/Status → Station.combine → Integridad',
         () {
-      // ENFOQUE ASCENDENTE:
-      // Empezamos con datos crudos (JSON) y validamos cada capa hacia arriba:
-      // 1. JSON crudo (como viene de la API GBFS)
-      // 2. Parsing a modelos individuales (StationInfo, StationStatus)
-      // 3. Combinación en modelo unificado (Station)
-      // 4. Validación de reglas de negocio (integridad de datos)
-      //
-      // Utilidad: Detecta problemas en el procesamiento de datos desde el origen
 
       // PASO 1: Datos crudos JSON (como vienen de la API)
       final stationInfoJson = {
@@ -75,8 +67,8 @@ void main() {
       expect(totalBikes, station.numBikesAvailable,
           reason: 'La suma de bicis por tipo debe igualar el total disponible');
 
-      // ✅ Si llegamos aquí, el flujo completo funciona correctamente
-      print('✅ Flujo ascendente completado: JSON → Modelos → Station → ✓');
+      // Si llegamos aquí, el flujo completo funciona correctamente
+      print('Flujo ascendente completado: JSON → Modelos → Station → Integridad');
     });
   });
 }

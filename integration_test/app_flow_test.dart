@@ -11,72 +11,73 @@ void main() {
 
   testWidgets('Flujo completo: Usuario busca estación y ve detalle',
       (WidgetTester tester) async {
-    // FLUJO ELEGIDO: Búsqueda y visualización de detalles de una estación
-    // Por qué es representativo: Es el caso de uso principal de la app
-    // Un usuario típico quiere:
-    //   1. Ver estaciones disponibles
-    //   2. Buscar una específica
-    //   3. Ver cuántas bicis hay
-    //
-    // NOTA: Este test se ejecuta en emuladores de Android Studio disponibles en VS Code
-    // Los expects tienen 'skip' para que no interfieran cuando se ejecutan tests unitarios con 'flutter test'
 
     // PASO 1: Usuario abre la aplicación
     app.main();
-    await tester.pumpAndSettle(const Duration(seconds: 3));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    // THEN: Debe ver el título de la aplicación
-    expect(find.text('BiciCoruña'), findsOneWidget,
-        skip: 'Ejecutar con: flutter test integration_test/ en emulador Android');
+    // Validación: Debe cargar y mostrar el título
+    expect(find.text('BiciCoruña'), findsOneWidget);
 
-    // THEN: Debe ver estaciones en la lista (esperamos que carguen de la API)
-    await tester.pump(const Duration(seconds: 2));
-    await tester.pumpAndSettle();
-
+    // Validación: Debe cargar estaciones desde la API GBFS real
     expect(find.byType(Card), findsWidgets,
-        skip: 'Debe mostrar tarjetas de estaciones');
+        reason: 'Debe mostrar tarjetas de estaciones cargadas de la API');
 
     // PASO 2: Usuario busca una estación específica
     final searchField = find.byType(TextField);
-    expect(searchField, findsOneWidget, skip: 'Debe haber campo de búsqueda');
+    expect(searchField, findsOneWidget,
+        reason: 'Debe existir campo de búsqueda');
 
-    await tester.enterText(searchField, 'Aquarium');
-    await tester.pump(const Duration(milliseconds: 500));
-    await tester.pumpAndSettle();
+    await tester.enterText(searchField, 'Torre');
+    await tester.pumpAndSettle(const Duration(seconds: 1));
 
-    // THEN: Solo debe ver resultados que contienen "Aquarium"
-    expect(find.text('Aquarium'), findsWidgets,
-        skip: 'Debe filtrar y mostrar "Aquarium"');
+    // Validación: El filtro debe funcionar (solo estaciones con "Torre")
+    final cardsFiltrados = find.byType(Card);
+    expect(cardsFiltrados, findsWidgets,
+        reason: 'Debe mostrar estaciones que contienen "Torre"');
 
-    // PASO 3: Usuario selecciona la estación
-    final firstStation = find.byType(Card).first;
-    await tester.tap(firstStation);
+    // Validación: Verificar que muestra resultados de Torre
+    expect(find.textContaining('Torre', findRichText: true), findsWidgets,
+        reason: 'Los resultados deben contener "Torre"');
+
+    // PASO 3: Usuario limpia búsqueda para ver todas
+    await tester.enterText(searchField, '');
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    // Validación: Debe mostrar todas las estaciones de nuevo
+    expect(find.byType(Card), findsWidgets,
+        reason: 'Búsqueda vacía debe restaurar lista completa');
+
+    // PASO 4: Usuario selecciona primera estación
+    final primeraEstacion = find.byType(Card).first;
+    await tester.tap(primeraEstacion);
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    // THEN: Debe navegar a la pantalla de detalles
+    // Validación: Debe navegar a pantalla de detalle
     expect(find.byType(BackButton), findsOneWidget,
-        skip: 'Debe mostrar botón de retroceso en detalle');
+        reason: 'Detalle debe tener botón de retroceso');
 
-    // THEN: Debe ver información completa
-    expect(find.text('Capacidad'), findsOneWidget,
-        skip: 'Debe mostrar métricas de capacidad');
-    expect(find.text('Bicis Disponibles'), findsOneWidget,
-        skip: 'Debe mostrar bicis disponibles');
-    expect(find.text('Bicis Mecánicas'), findsOneWidget,
-        skip: 'Debe mostrar tipos de bici');
+    // Validación: Debe mostrar métricas completas (pueden aparecer múltiples veces)
+    expect(find.text('Puestos totales'), findsWidgets,
+        reason: 'Debe mostrar información de capacidad total');
+    expect(find.text('Bicis disponibles'), findsWidgets,
+        reason: 'Debe mostrar bicis disponibles');
+    expect(find.text('Anclajes libres'), findsWidgets,
+        reason: 'Debe mostrar anclajes disponibles');
+    expect(find.text('Mecánicas'), findsWidgets,
+        reason: 'Debe mostrar desglose por tipo de bici');
 
-    // PASO 4: Usuario vuelve a la lista
+    // PASO 5: Usuario vuelve a la lista
     final backButton = find.byType(BackButton);
     await tester.tap(backButton);
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(const Duration(seconds: 1));
 
-    // THEN: Debe volver a la lista principal
+    // Validación: Debe volver a la lista principal
     expect(find.text('BiciCoruña'), findsOneWidget,
-        skip: 'Debe volver a la pantalla principal');
+        reason: 'Debe mostrar título de la pantalla principal');
     expect(find.byType(Card), findsWidgets,
-        skip: 'Debe mostrar nuevamente la lista');
+        reason: 'Debe restaurar lista completa de estaciones');
 
-    // ✅ Si todos los pasos se completan, el flujo funciona correctamente
-    print('✅ Flujo de sistema completado: Buscar → Ver detalle → Volver → ✓');
+    print('Test de sistema completado: E2E con API real → Búsqueda → Detalle → Retorno');
   });
 }

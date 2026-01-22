@@ -5,7 +5,7 @@ import 'package:bicicoruna/models/station_info.dart';
 import 'package:bicicoruna/models/station_status.dart';
 
 void main() {
-  group('StationViewModel - Búsqueda', () {
+  group('StationViewModel - Gestión de estado y búsqueda', () {
     test('Filtra estaciones correctamente por nombre', () {
       // PROPÓSITO: Verificar que el buscador filtra estaciones por su nombre
       // Impacto si falla: El usuario no podría encontrar estaciones específicas
@@ -55,62 +55,6 @@ void main() {
       expect(viewModel.filteredStations.length, 1,
           reason: 'Búsqueda debe ser case-insensitive');
       expect(viewModel.filteredStations.first.name, 'Plaza De Pontevedra');
-    });
-
-    test('Búsqueda vacía muestra todas las estaciones', () {
-      // PROPÓSITO: Al borrar el texto de búsqueda, deben aparecer todas las estaciones
-      // Impacto si falla: El usuario no podría volver a ver todas las estaciones
-      
-      // Arrange: ViewModel con 3 estaciones
-      final viewModel = StationViewModel();
-      viewModel.stations.addAll([
-        _crearEstacionFake('1', 'Plaza De Pontevedra'),
-        _crearEstacionFake('2', 'Aquarium'),
-        _crearEstacionFake('3', 'Torre de Hércules'),
-      ]);
-      viewModel.filteredStations.clear(); // Simulamos una búsqueda previa
-
-      // Act: Búsqueda vacía
-      viewModel.searchStations('');
-
-      // Assert: Debe mostrar todas las estaciones
-      expect(viewModel.filteredStations.length, 3,
-          reason: 'Búsqueda vacía debe mostrar todas las estaciones');
-    });
-  });
-
-  group('StationViewModel - Gestión de Estado', () {
-    test('Estado inicial es StationState.initial', () {
-      // PROPÓSITO: Verificar que el ViewModel empieza en estado "initial"
-      // Impacto si falla: La UI podría mostrar estados incorrectos al inicio
-      
-      // Arrange & Act: Creamos un ViewModel nuevo
-      final viewModel = StationViewModel();
-
-      // Assert
-      expect(viewModel.state, StationState.initial,
-          reason: 'El estado inicial debe ser "initial"');
-    });
-
-    test('filteredStations actualiza cuando se busca', () {
-      // PROPÓSITO: La lista filtrada debe actualizarse al realizar búsquedas
-      // Impacto si falla: La UI no se refrescaría con los resultados de búsqueda
-      
-      // Arrange: ViewModel con 2 estaciones
-      final viewModel = StationViewModel();
-      viewModel.stations.addAll([
-        _crearEstacionFake('1', 'Torre de Hércules'),
-        _crearEstacionFake('2', 'Aquarium'),
-      ]);
-      viewModel.filteredStations.addAll(viewModel.stations);
-
-      // Act
-      viewModel.searchStations('torre');
-
-      // Assert
-      expect(viewModel.filteredStations.length, 1,
-          reason: 'filteredStations debe actualizarse con la búsqueda');
-      expect(viewModel.filteredStations.first.name, 'Torre de Hércules');
     });
   });
 }

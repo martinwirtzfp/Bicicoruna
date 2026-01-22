@@ -7,14 +7,6 @@ import '../mocks/mock_station_repository.dart';
 void main() {
   group('Integración Descendente: ViewModel con MockRepository', () {
     test('Valida el flujo MockRepository → ViewModel → Búsqueda', () async {
-      // ENFOQUE DESCENDENTE:
-      // Empezamos por la lógica de negocio (ViewModel) sin depender de la API real:
-      // 1. MockRepository proporciona datos fake predefinidos
-      // 2. ViewModel procesa estos datos (carga, búsqueda, filtrado)
-      // 3. Validamos que la lógica de negocio funciona correctamente
-      //
-      // Utilidad: Permite probar el ViewModel sin conexión a internet
-      // Decisión: Usamos 5 estaciones fake con datos realistas variados
 
       // PASO 1: Preparamos el mock y el ViewModel
       final mockRepository = MockStationRepository();
@@ -61,8 +53,8 @@ void main() {
                 '${station.name}: Los datos del mock deben ser consistentes');
       }
 
-      // ✅ Si llegamos aquí, el flujo descendente funciona correctamente
-      print('✅ Flujo descendente completado: Mock → ViewModel → Búsqueda → ✓');
+      // Si llegamos aquí, el flujo descendente funciona correctamente
+      print('Flujo descendente completado: Mock → ViewModel → Búsqueda → Integridad');
     });
   });
 }
